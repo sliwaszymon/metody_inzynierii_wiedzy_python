@@ -16,7 +16,7 @@ def euclidean_distance(list1, list2):
 
 def distances(macierz):
     ans = {0: [], 1: []}
-    for x in range(len(macierz)):
+    for x in range(1, len(macierz), 1):
         ans[macierz[x][len(macierz[x])-1]].append(euclidean_distance(macierz[0], macierz[x]))
     return ans
 
