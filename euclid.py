@@ -41,23 +41,30 @@ def _distance_between(x, lista):
         ans.append((int(lista[y][-1]), euclidean_distance(x, lista[y])))
     return ans
 
-def _grupujemy(lista, n):
+def _group(lista):
     ans = {}
     for x in lista:
         if x[0] not in ans.keys():
             ans[x[0]] = [x[1]]
         else:
             ans[x[0]].append(x[1])
-    for key in ans.keys():
-        ans[key].sort()
-        ans[key] = sum(ans[key][:n])
-    return ans        
-    
-    
+    return ans
+
+def _knn(dictionary, k):
+    for key in dictionary.keys():
+        dictionary[key].sort()
+        dictionary[key] = sum(dictionary[key][:k])
+    return dictionary
+
+def aggregate(dictionary):
+    # return [x for x,y in dictionary.items() if y == min(dictionary.values())][0]
+    return list(dictionary.keys())[list(dictionary.values()).index(min(dictionary.values()))]
+
+
 
 macierz = get_from_file("australian.dat")
 # dystanse = distances(macierz)
 # print(dystanse)
 
 x = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-print(_grupujemy(_distance_between(x, macierz), 5))
+print(aggregate(_knn(_group(_distance_between(x, macierz)), 5)))
