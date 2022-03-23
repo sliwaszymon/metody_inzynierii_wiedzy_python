@@ -57,8 +57,11 @@ def _knn(dictionary, k):
     return dictionary
 
 def aggregate(dictionary):
-    # return [x for x,y in dictionary.items() if y == min(dictionary.values())][0]
-    return list(dictionary.keys())[list(dictionary.values()).index(min(dictionary.values()))]
+    ans = [x for x,y in dictionary.items() if y == min(dictionary.values())]
+    if len(ans) > 1:
+        return None
+    return ans[0]
+    # return list(dictionary.keys())[list(dictionary.values()).index(min(dictionary.values()))]
 
 
 
