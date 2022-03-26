@@ -1,3 +1,5 @@
+import numpy as np
+
 def get_from_file(file):
     ans = []
     with open(file, "r") as file:
@@ -5,15 +7,28 @@ def get_from_file(file):
             ans.append(list(map(lambda x: float(x), line.replace("\n", "").split())))
     return ans
 
-def euclidean_distance(list1, list2):
-    if abs(len(list1)-len(list1)) == 1 or abs(len(list1)-len(list1)) == 0:
-        sum = 0
-        for x in range(max(len(list1), len(list2))-1):
-            sum += pow(list2[x] - list1[x], 2)
-        return pow(sum, 1/2)
-    else:
-        return False
+# STARY KOD
+# def euclidean_distance(list1, list2):
+#     if abs(len(list2)-len(list1)) == 1 or abs(len(list2)-len(list1)) == 0:
+#         sum = 0
+#         for x in range(max(len(list1), len(list2))-1):
+#             sum += pow(list2[x] - list1[x], 2)
+#         return pow(sum, 1/2)
+#     else:
+#         return False
 
+# NOWY KOD
+def euclidean_distance(list1, list2, delete=True):
+    if delete:
+        x = max(len(list1), len(list2)) - 1
+        a = np.array(list1[:x])
+        b = np.array(list2[:x])
+    else:
+        a = np.array(list1)
+        b = np.array(list2)
+    c = b - a
+    return pow(np.dot(c, c), 1/2)
+    
 
 # PRACA DOMOWA 1
 # def distances(macierz):
@@ -38,7 +53,8 @@ def euclidean_distance(list1, list2):
 def _distance_between(x, lista):
     ans = []
     for y in range(len(lista)):
-        ans.append((int(lista[y][-1]), euclidean_distance(x, lista[y])))
+        if x is not lista[y]:
+            ans.append((int(lista[y][-1]), euclidean_distance(x, lista[y])))
     return ans
 
 def _group(lista):
@@ -70,4 +86,7 @@ macierz = get_from_file("australian.dat")
 # print(dystanse)
 
 x = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
 print(aggregate(_knn(_group(_distance_between(x, macierz)), 5)))
+# print(_knn(_group(_distance_between(x, macierz)), 5))
+# print(_group(_distance_between(x, macierz)))
