@@ -32,8 +32,3 @@ def foo(x):
     return (x**3+ 3*x**2)/3   # to jest całka powyzszej
 
 print(montecarlo_integration(foo, 4, 7, 1000000))
-
-# australina
-# wywalasz ostatie
-# randomowo dodajesz ostatnie 0 lub 1
-# dla kazdego punktu sprawdzamy odleglosci do pozostalych 
