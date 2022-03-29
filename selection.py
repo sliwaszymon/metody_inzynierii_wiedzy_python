@@ -49,16 +49,23 @@ def euclidean_distance(list1, list2, delete=True):
     c = b - a
     return pow(np.dot(c, c), 1/2)
 
-def central_spots(sorted_dataset):
+def central_spots(sorted_dataset, k=False):
     ans = {}
     for key in sorted_dataset.keys():
         temp = {}
         for x in range(len(sorted_dataset[key])):
-            dist = 0
-            for y in range(len(sorted_dataset[key])):
-                if x != y:
-                    dist += euclidean_distance(sorted_dataset[key][x], sorted_dataset[key][y])
-            temp[tuple(sorted_dataset[key][x])] = dist
+            if not k:
+                dist = 0
+                for y in range(len(sorted_dataset[key])):
+                    if x != y:
+                        dist += euclidean_distance(sorted_dataset[key][x], sorted_dataset[key][y])
+                temp[tuple(sorted_dataset[key][x])] = dist
+            else:
+                dist = []
+                for y in range(len(sorted_dataset[key])):
+                    if x != y:
+                        dist.append(euclidean_distance(sorted_dataset[key][x], sorted_dataset[key][y]))
+                temp[tuple(sorted_dataset[key][x])] = sum(dist[:k]) / k
         ans[key] = list(list(temp.keys())[list(temp.values()).index(min(temp.values()))])
     return ans
 
@@ -76,7 +83,7 @@ def seggregate(dataset1, dataset2):
     while swaps > 0:
         swaps = 0
         sorted_dataset = sort_by_key(dataset1)
-        actual_central_spots = central_spots(sorted_dataset)
+        actual_central_spots = central_spots(sorted_dataset) #, 10)
         for x in range(len(dataset1)):
             if decision(dataset1[x], actual_central_spots) != dataset1[x][-1]:
                 dataset1[x][-1] = decision(dataset1[x], actual_central_spots)
@@ -99,3 +106,7 @@ dataset_suffled = suffle(dataset)
 # sorted_dataset = sort_by_key(dataset)
 # actual_central_spots = central_spots(sorted_dataset)
 dataset_end = seggregate(dataset_suffled, dataset)
+
+# bez normalizacji: 60.86956521739131% i 39.130434782608695%
+# z normalizacją: 79.42028985507247%, 20.579710144927535%, 83.91304347826087% i 16.08695652173913%
+# przy normalizacji z k = 10: 79.85507246376812%, 20.144927536231886%, 57.971014492753625% i 42.028985507246375%
