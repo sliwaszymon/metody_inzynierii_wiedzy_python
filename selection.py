@@ -8,10 +8,12 @@ def get_from_file(file):
             ans.append(list(map(lambda x: float(x), line.replace("\n", "").split())))
     return ans
 
-def suffle(dataset):
-    for point in range(len(dataset)):
-        dataset[point][-1] = random.randrange(0, 2)
-    return dataset
+def suffle(dataset1):
+    temp = dataset1.copy()
+    for x in range(len(dataset1)):
+        temp[x] = dataset[x].copy()
+        temp[x][-1] = random.choice([0,1])
+    return temp
 
 def sort_by_key(dataset):
     ans = {}
@@ -55,28 +57,28 @@ def decision(point, central_spots):
         return None
     return ans[0]
 
-def seggregate(dataset):
+def seggregate(dataset1, dataset2):
     swaps = 1
     while swaps > 0:
         swaps = 0
-        sorted_dataset = sort_by_key(dataset)
+        sorted_dataset = sort_by_key(dataset1)
         actual_central_spots = central_spots(sorted_dataset)
-        for x in range(len(dataset)):
-            if decision(dataset[x], actual_central_spots) != dataset[x][-1]:
-                dataset[x][-1] = decision(dataset[x], actual_central_spots)
+        for x in range(len(dataset1)):
+            if decision(dataset1[x], actual_central_spots) != dataset1[x][-1]:
+                dataset1[x][-1] = decision(dataset1[x], actual_central_spots)
                 swaps += 1
+        print(check_diff(dataset1, dataset2))
     return dataset
 
 def check_diff(dataset1, dataset2):
     diff = 0
     for x in range(len(dataset1)):
-        if dataset1[x][-1] != dataset2[x][-1]:
+        if (dataset1[x][-1] != dataset2[x][-1]):
             diff += 1
-    return diff
+    return str((len(dataset1) - diff)/len(dataset1) * 100) + "%"
 
 dataset = get_from_file("australian.dat")
 dataset_suffled = suffle(dataset)
 # sorted_dataset = sort_by_key(dataset)
 # actual_central_spots = central_spots(sorted_dataset)
-dataset2 = seggregate(dataset_suffled)
-print(check_diff(dataset, dataset2))
+dataset_end = seggregate(dataset_suffled, dataset)
