@@ -72,7 +72,7 @@ def check_diff(dataset1, dataset2):
     for x in range(len(dataset1)):
         if dataset1[x][-1] != dataset2[x][-1]:
             diff += 1
-    return diff
+    return str((len(dataset1) - diff) / len(dataset1) * 100) + "%"
 
 dataset = get_from_file("australian.dat")
 dataset_suffled = suffle(dataset)
