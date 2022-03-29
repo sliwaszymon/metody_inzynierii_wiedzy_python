@@ -15,6 +15,20 @@ def suffle(dataset1):
         temp[x][-1] = random.choice([0,1])
     return temp
 
+def normalize(dataset1):
+    normalized = dataset1.copy()
+    for x in range(len(dataset1)):
+        normalized[x] = dataset1[x].copy()
+    normalize_ratio = []
+    for x in range(len(dataset1[0])-1):
+        minimum = min([dataset1[y][x] for y in range(len(dataset1))])
+        maximum = max([dataset1[y][x] for y in range(len(dataset1))])
+        normalize_ratio.append((minimum, maximum))
+    for x in range(len(normalized)):
+        for y in range(len(normalized[x])-1):
+            normalized[x][y] = (normalized[x][y] - normalize_ratio[y][0]) / (normalize_ratio[y][1] - normalize_ratio[y][0])
+    return normalized
+
 def sort_by_key(dataset):
     ans = {}
     for point in dataset:
@@ -80,6 +94,7 @@ def check_diff(dataset1, dataset2):
 
 
 dataset = get_from_file("australian.dat")
+dataset = normalize(dataset)
 dataset_suffled = suffle(dataset)
 # sorted_dataset = sort_by_key(dataset)
 # actual_central_spots = central_spots(sorted_dataset)
