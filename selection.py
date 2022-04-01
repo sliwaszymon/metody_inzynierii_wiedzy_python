@@ -9,9 +9,8 @@ def get_from_file(file):
     return ans
 
 def suffle(dataset1):
-    temp = dataset1.copy()
+    temp = [x.copy() for x in dataset1]
     for x in range(len(dataset1)):
-        temp[x] = dataset[x].copy()
         temp[x][-1] = random.choice([0,1])
     return temp
 
@@ -88,6 +87,7 @@ def seggregate(dataset1, dataset2):
             if decision(dataset1[x], actual_central_spots) != dataset1[x][-1]:
                 dataset1[x][-1] = decision(dataset1[x], actual_central_spots)
                 swaps += 1
+        print(swaps)
         print(check_diff(dataset1, dataset2))
     return dataset
 
@@ -96,7 +96,6 @@ def check_diff(dataset1, dataset2):
     for x in range(len(dataset1)):
         if (dataset1[x][-1] != dataset2[x][-1]):
             diff += 1
-
     return str((len(dataset1) - diff) / len(dataset1) * 100) + "%"
 
 
