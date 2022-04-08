@@ -82,12 +82,12 @@ def seggregate(dataset1, dataset2):
     while swaps > 0:
         swaps = 0
         sorted_dataset = sort_by_key(dataset1)
-        actual_central_spots = central_spots(sorted_dataset) #, 10)
+        actual_central_spots = central_spots(sorted_dataset, 10)
         for x in range(len(dataset1)):
             if decision(dataset1[x], actual_central_spots) != dataset1[x][-1]:
                 dataset1[x][-1] = decision(dataset1[x], actual_central_spots)
                 swaps += 1
-        print(swaps)
+        # print(swaps)
         print(check_diff(dataset1, dataset2))
     return dataset
 
