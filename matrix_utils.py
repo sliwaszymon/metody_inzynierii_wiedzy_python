@@ -84,6 +84,35 @@ class MatrixUtils:
         dot2 = np.dot(y, MatrixUtils.transpose(X))
         return list(np.dot(inverse, dot2))
 
+    @staticmethod
+    def vector_length(vector:list):
+        v = np.array(vector)
+        return pow((np.dot(v,v)), 1/2)
+
+    @staticmethod
+    def projection(u:list, v:list):
+            u = np.array(u)
+            v = np.array(v)
+            return list((np.dot(v,u) / np.dot(u,u)) * u)
+
+    @staticmethod
+    def qr_decomposition(matrix:list):
+        temp = MatrixUtils.transpose(matrix)
+        Q = []
+        u = temp[0]
+        e = list(np.array(u) / MatrixUtils.vector_length(u))
+        Q.append(e)
+        for x in range(1, len(temp)):
+            u = list(np.array(temp[x]) - np.array(MatrixUtils.projection(u, temp[x])))
+            e = list(np.array(u) / MatrixUtils.vector_length(u))
+            Q.append(e)
+        R = np.dot(np.array(Q), np.array(matrix))
+        R = [list(x) for x in R]
+        return Q, R
+
+        
+        
+
 
 class Matrix:
     value:list = None
@@ -115,5 +144,7 @@ class Matrix:
         })
 
 
-mat = Matrix([[2,1],[5,2],[7,3],[8,3]])
-print(mat)
+# mat = Matrix([[2,1],[5,2],[7,3],[8,3]])
+# print(mat)
+
+print(MatrixUtils.qr_decomposition([[1,0], [1,1], [0,1]]))
