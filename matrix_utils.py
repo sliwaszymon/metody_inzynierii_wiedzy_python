@@ -96,22 +96,27 @@ class MatrixUtils:
             return list((np.dot(v,u) / np.dot(u,u)) * u)
 
     @staticmethod
-    def qr_decomposition(matrix:list):
+    def qr_decomposition(matrix:list, epsilon:float = 0.00001):
         temp = MatrixUtils.transpose(matrix)
         Q = []
-        u = temp[0]
-        e = list(np.array(u) / MatrixUtils.vector_length(u))
+        all_U = [temp[0]]
+        e = list(np.array(all_U[0]) / MatrixUtils.vector_length(all_U[0]))
         Q.append(e)
         for x in range(1, len(temp)):
-            u = list(np.array(temp[x]) - np.array(MatrixUtils.projection(u, temp[x])))
+            u = np.array(temp[x])
+            for y in range(len(all_U)):
+                u = u - np.array(MatrixUtils.projection(all_U[y], temp[x]))
+            u = list(u)
+            all_U.append(u)
             e = list(np.array(u) / MatrixUtils.vector_length(u))
             Q.append(e)
         R = np.dot(np.array(Q), np.array(matrix))
         R = [list(x) for x in R]
-        return Q, R
-
-        
-        
+        for x in range(len(R)):
+            for y in range(len(R[x])):
+                if abs(R[x][y]) < epsilon:
+                    R[x][y] = 0
+        return MatrixUtils.transpose(Q), list(R)
 
 
 class Matrix:
@@ -147,4 +152,5 @@ class Matrix:
 # mat = Matrix([[2,1],[5,2],[7,3],[8,3]])
 # print(mat)
 
-print(MatrixUtils.qr_decomposition([[1,0], [1,1], [0,1]]))
+# print(MatrixUtils.qr_decomposition([[2,1], [1,0], [0,2]]))
+print(MatrixUtils.qr_decomposition([[2,3,2], [1,0,3], [0,1,1]]))
