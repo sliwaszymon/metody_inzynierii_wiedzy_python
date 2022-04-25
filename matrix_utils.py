@@ -1,3 +1,4 @@
+from email.charset import QP
 from statistics import linear_regression
 import numpy as np
 
@@ -118,6 +119,22 @@ class MatrixUtils:
                     R[x][y] = 0
         return MatrixUtils.transpose(Q), list(R)
 
+    def eigenvalues(matrix:list, k:int = 5):
+        for x in range(len(matrix)):
+            if matrix != MatrixUtils.transpose(matrix):
+                # raise ValueError("Matrix is not symmetrical.")
+                return None
+            else:
+                A = [x.copy() for x in matrix]
+                for x in range(k):
+                    Q, R = MatrixUtils.qr_decomposition(A)
+                    Q, R = np.array(Q), np.array(R)
+                    A = np.dot(R,Q)
+                    A = [list(x) for x in A]
+                return A
+
+
+
 
 class Matrix:
     value:list = None
@@ -153,4 +170,9 @@ class Matrix:
 # print(mat)
 
 # print(MatrixUtils.qr_decomposition([[2,1], [1,0], [0,2]]))
-print(MatrixUtils.qr_decomposition([[2,3,2], [1,0,3], [0,1,1]]))
+print(MatrixUtils.foo123([[2,1], [1,2]], 2))
+print(MatrixUtils.foo123([[2,1], [1,2]], 3))
+print(MatrixUtils.foo123([[2,1], [1,2]], 4))
+print(MatrixUtils.foo123([[2,1], [1,2]], 5))
+print(MatrixUtils.foo123([[2,1], [1,2]], 10))
+print(MatrixUtils.foo123([[2,1], [1,2]], 20))
