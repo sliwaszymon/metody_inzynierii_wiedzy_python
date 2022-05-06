@@ -134,8 +134,6 @@ class MatrixUtils:
                 return A
 
 
-
-
 class Matrix:
     value:list = None
     shape:tuple = None
