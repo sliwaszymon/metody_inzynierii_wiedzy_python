@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 def det(matrix): # napisane własnoręcznie w matrix_utils.py
     return np.linalg.det(matrix)
@@ -57,11 +58,38 @@ def eigenvalues(matrix, stop=5000): # np.inalg.eigvals(a)
             i = i + 1
     return np.fliplr(matrix).diagonal()
 
+def gauss_elimination(matrix):
+    matrix = np.array(matrix, dtype=np.float64)
+    matrix.dtype = np.float64
+    for x in range(len(matrix)):
+        if matrix[x][x] == 0.0:
+            sys.exit("dzielenie przez 0")
+        for y in range (x+1, len(matrix)):
+            ratio = matrix[y][x]/matrix[x][x]
+            for z in range(len(matrix)+1):
+                matrix[y][z] = matrix[y][z] - ratio * matrix[x][z]
+    return matrix
 
+def back_substitution(matrix):
+    ans = np.zeros(len(matrix))
+    ans[len(matrix)-1] = matrix[len(matrix)-1][len(matrix)]/matrix[len(matrix)-1][len(matrix)-1]
+    for x in range(len(matrix)-2, -1, -1):
+        ans[x] = matrix[x][len(matrix)]
+        for y in range(x+1, len(matrix)):
+            ans[x] = ans[x] - matrix[x][y]*ans[y]
+        ans[x] = ans[x]/matrix[x][x]
+    return ans
+
+def gauss_equation_solving(matrix):
+    return back_substitution(gauss_elimination(matrix))
 
 ######### TEST SECTION #########
-matrix = np.array([[1,1,0], [1,0,1], [0,1,1]])
+# matrix = np.array([[1,1,0,], [1,0,1], [0,1,1]])
+matrix = np.array([[4,-2,4,-2,8],[3,1,4,2,7],[2,4,2,1,10],[2,-2,4,2,2]])
 
-print(np.linalg.eigvals(matrix))    # [-1.  1.  2.]
-print(eigenvalues(matrix))          # [ 0.  -0.50001144  0.]
+# print(np.linalg.eigvals(matrix))    # [-1.  1.  2.]
+# print(eigenvalues(ma trix))          # [ 0.  -0.50001144  0.]
 # coś jest źle...
+# print(gauss_elimination(matrix))
+# print(back_substitution(gauss_elimination(matrix)))
+print(gauss_equation_solving(matrix))
