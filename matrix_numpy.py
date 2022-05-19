@@ -48,7 +48,7 @@ def next_A(matrix):
     q, r = qr_decomposition(matrix)
     return np.dot(r,q)
 
-def eigenvalues(matrix, stop=5000): # np.inalg.eigvals(a)
+def eigenvalues(matrix, stop=5000): # np.linalg.eigvals(a)
     i = 0
     if (matrix == np.transpose(matrix)).all():
         while not is_upper_triangular(matrix):
@@ -83,13 +83,34 @@ def back_substitution(matrix):
 def gauss_equation_solving(matrix):
     return back_substitution(gauss_elimination(matrix))
 
+
+
+def foo(A):
+    AT = np.transpose(A)
+    AAT = np.dot(A, AT)
+    EIGVALS = np.linalg.eigvals(AAT)
+    # SINGVALS = np.array([pow(x, 1/2) for x in EIGVALS])
+    ans = {}
+    for index in range(AAT.ndim):
+        temp = np.eye(AAT.ndim) * EIGVALS[index] 
+        matrix = AAT.copy() - temp
+        # column = np.array([[1] for x in range(AAT.ndim)])
+        # matrix = np.append(matrix, column, axis=1)
+        vector = np.linalg.eigh(matrix)
+        ans[index] = vector
+    return ans
+
+
+
 ######### TEST SECTION #########
 # matrix = np.array([[1,1,0,], [1,0,1], [0,1,1]])
-matrix = np.array([[4,-2,4,-2,8],[3,1,4,2,7],[2,4,2,1,10],[2,-2,4,2,2]])
-
+# matrix = np.array([[4,-2,4,-2,8],[3,1,4,2,7],[2,4,2,1,10],[2,-2,4,2,2]])
+matrix = np.array([[1,2,0],[2,0,2]], dtype=np.float64)
 # print(np.linalg.eigvals(matrix))    # [-1.  1.  2.]
 # print(eigenvalues(ma trix))          # [ 0.  -0.50001144  0.]
 # coś jest źle...
 # print(gauss_elimination(matrix))
 # print(back_substitution(gauss_elimination(matrix)))
-print(gauss_equation_solving(matrix))
+# print(gauss_equation_solving(matrix))
+
+print(foo(matrix))
