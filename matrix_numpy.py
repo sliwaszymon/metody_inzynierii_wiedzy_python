@@ -49,7 +49,7 @@ def next_A(matrix):
     q, r = qr_decomposition(matrix)
     return np.dot(r,q)
 
-def eigenvalues(matrix, stop=5000): # np.linalg.eigvals(a)
+def eigenvalues(matrix, stop=5000): # (oparte o ciąg Ak -> RQ do momentu aż macież będzie trójkątną górną) np.linalg.eigvals(a)
     i = 0
     if (matrix == np.transpose(matrix)).all():
         while not is_upper_triangular(matrix):
@@ -97,7 +97,7 @@ def svd(A):
             for x in range(U.shape[1]):
                 if math.fabs(U[y][x]) < 0.000001:
                     U[y][x] = 0 
-        # np.linalg.eigh zwraca macierze wyliczone z lambd posortowanych malejąco więc trzeba wiersze przekręcić od dołu do góry
+        # np.linalg.eigh zwraca macierze wyliczone z lambd posortowanych ROSNĄCO więc trzeba wiersze przekręcić od dołu do góry
         U = U.T
         U = U[::-1]
         U = U.T
