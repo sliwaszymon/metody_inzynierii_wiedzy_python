@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import math
 
 def det(matrix): # napisane własnoręcznie w matrix_utils.py
     return np.linalg.det(matrix)
@@ -83,29 +84,65 @@ def back_substitution(matrix):
 def gauss_equation_solving(matrix):
     return back_substitution(gauss_elimination(matrix))
 
+def svd(A):
+    AAT = np.dot(A, A.T)
+    ATA = np.dot(A.T, A)
+    
+    if AAT.shape[0] * AAT.shape[1] > ATA.shape[0] * ATA.shape[1]:
+        EIGVALS = np.sort(np.linalg.eigvals(AAT))[::-1] # wartości własne z numpy bo szybciej działa
+        EIGVALS = [x if math.fabs(x) > 0.000001 else 0 for x in EIGVALS]
+        SINGVALS = np.array([pow(x, 1/2) for x in EIGVALS if x != 0])
+        U = np.linalg.eigh(AAT)[1]
+        for y in range(U.shape[0]):
+            for x in range(U.shape[1]):
+                if math.fabs(U[y][x]) < 0.000001:
+                    U[y][x] = 0 
+        # np.linalg.eigh zwraca macierze wyliczone z lambd posortowanych malejąco więc trzeba wiersze przekręcić od dołu do góry
+        U = U.T
+        U = U[::-1]
+        U = U.T
 
+        V = []
+        for x in range(ATA.shape[0]):
+            V.append(np.dot(A.T, U.T[x]) * (1/SINGVALS[x]))
+        V = np.array(V)
+    else:
+        EIGVALS = np.sort(np.linalg.eigvals(ATA))[::-1]
+        EIGVALS = [x if math.fabs(x) > 0.000001 else 0 for x in EIGVALS]
+        SINGVALS = np.array([pow(x, 1/2) for x in EIGVALS if x != 0])
+        V = np.linalg.eigh(ATA)[1]
+        for y in range(V.shape[0]):
+            for x in range(V.shape[1]):
+                if math.fabs(V[y][x]) < 0.000001:
+                    V[y][x] = 0 
 
-def foo(A):
-    AT = np.transpose(A)
-    AAT = np.dot(A, AT)
-    EIGVALS = np.linalg.eigvals(AAT)
-    # SINGVALS = np.array([pow(x, 1/2) for x in EIGVALS])
-    ans = {}
-    for index in range(AAT.ndim):
-        temp = np.eye(AAT.ndim) * EIGVALS[index] 
-        matrix = AAT.copy() - temp
-        # column = np.array([[1] for x in range(AAT.ndim)])
-        # matrix = np.append(matrix, column, axis=1)
-        vector = np.linalg.eigh(matrix)
-        ans[index] = vector
-    return ans
+        V = V.T
+        V = V[::-1]
+        V = V.T
+
+        U = []
+        for x in range(AAT.shape[0]):
+            U.append(np.dot(A, V.T[x]) * (1/SINGVALS[x]))
+        U = np.array(U)
+    
+    
+    SIGMA = np.zeros(A.shape)
+    for y in range(SIGMA.shape[0]):
+        for x in range(SIGMA.shape[1]):
+            if y == x:
+                SIGMA[y][x] = SINGVALS[x]
+    
+    # SZCZERZE MÓWIĄC NIE WIEM JAK ZAPROGRAMOWAĆ WEKTORY DO MACIERZY U I V RĘCZNIE BEZ BIBLIOTEK
+    # BO GAUSS ŚREDNIO PASUJE 
+
+    return U, SIGMA, V.T
 
 
 
 ######### TEST SECTION #########
 # matrix = np.array([[1,1,0,], [1,0,1], [0,1,1]])
 # matrix = np.array([[4,-2,4,-2,8],[3,1,4,2,7],[2,4,2,1,10],[2,-2,4,2,2]])
-matrix = np.array([[1,2,0],[2,0,2]], dtype=np.float64)
+matrix = np.array([[1,-2,0],[0,-2,1]])
 # print(np.linalg.eigvals(matrix))    # [-1.  1.  2.]
 # print(eigenvalues(ma trix))          # [ 0.  -0.50001144  0.]
 # coś jest źle...
@@ -113,4 +150,24 @@ matrix = np.array([[1,2,0],[2,0,2]], dtype=np.float64)
 # print(back_substitution(gauss_elimination(matrix)))
 # print(gauss_equation_solving(matrix))
 
-print(foo(matrix))
+
+print("=== MOJE SVD ===")
+U, SIGMA, VT = svd(matrix)
+print("===== U =====")
+print(U)
+print("=== SIGMA ===")
+print(SIGMA)
+print("===== VT =====")
+print(VT)
+# print("=== powrót do A ===")
+# print(np.dot(np.dot(U, SIGMA), VT))
+
+# print("=== NUMPY SVD ===")
+# u, s, vh = np.linalg.svd(matrix)
+# print("===== U =====")
+# print(u)
+# print("=== SIGMA ===")
+# print(s)
+# print("===== VT =====")
+# print(vh)
+
